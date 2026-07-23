@@ -1,0 +1,109 @@
+/* Signal design tokens — data-theme = dark | light
+   Brand colors are invariant (never flip with theme). */
+
+:root {
+  /* ── Brand (theme-invariant) ── */
+  --brand: #c8f542;
+  --brand-ink: #0a0a0b;
+  --brand-on-brand: #0a0a0b;
+  --brand-dim: color-mix(in srgb, #c8f542 18%, transparent);
+
+  --radius: 6px;
+  --radius-lg: 10px;
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  --transition: 0.18s ease;
+
+  --rail-width: 220px;
+  --topbar-height: 56px;
+}
+
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0a0a0b;
+  --bg-elevated: #121214;
+  --bg-card: #161618;
+  --bg-muted: rgba(255, 255, 255, 0.05);
+  --bg-hover: rgba(255, 255, 255, 0.08);
+  --surface-glass: rgba(10, 10, 11, 0.88);
+  --text: #f4f4f5;
+  --text-secondary: rgba(244, 244, 245, 0.72);
+  --text-muted: rgba(244, 244, 245, 0.45);
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --accent: var(--brand);
+  --accent-hover: #d4ff5c;
+  --accent-soft: var(--brand-dim);
+  --accent-gradient: linear-gradient(135deg, #c8f542 0%, #a8d636 100%);
+  --success: #7ddea0;
+  --warning: #f5c518;
+  --danger: #ff6b6b;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --nav-scrolled: rgba(10, 10, 11, 0.92);
+  --hero-left: rgba(10, 10, 11, 0.92);
+  --hero-mid: rgba(10, 10, 11, 0.45);
+  --player-bg: #000;
+  --wordmark: #f4f4f5;
+  --rail-bg: #0e0e10;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f3f3f4;
+  --bg-elevated: #ffffff;
+  --bg-card: #ffffff;
+  --bg-muted: rgba(0, 0, 0, 0.04);
+  --bg-hover: rgba(0, 0, 0, 0.06);
+  --surface-glass: rgba(255, 255, 255, 0.92);
+  --text: #0a0a0b;
+  --text-secondary: rgba(10, 10, 11, 0.7);
+  --text-muted: rgba(10, 10, 11, 0.45);
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.14);
+  --accent: var(--brand);
+  --accent-hover: #b8e030;
+  --accent-soft: color-mix(in srgb, #c8f542 28%, transparent);
+  --accent-gradient: linear-gradient(135deg, #c8f542 0%, #a8d636 100%);
+  --success: #1a9d48;
+  --warning: #b8860b;
+  --danger: #d64545;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --nav-scrolled: rgba(255, 255, 255, 0.94);
+  --hero-left: rgba(243, 243, 244, 0.94);
+  --hero-mid: rgba(243, 243, 244, 0.4);
+  --player-bg: #0a0a0b;
+  --wordmark: #0a0a0b;
+  --rail-bg: #ececee;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-feature-settings: 'ss01' on;
+  letter-spacing: -0.02em;
+}

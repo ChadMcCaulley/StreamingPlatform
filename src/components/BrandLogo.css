@@ -1,0 +1,55 @@
+/* Brand colors are hardcoded — do not theme the mark */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-decoration: none;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.brand__mark {
+  display: block;
+  line-height: 0;
+  flex-shrink: 0;
+}
+
+.brand__mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.brand--sm .brand__mark {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.brand--md .brand__mark {
+  width: 1.85rem;
+  height: 1.85rem;
+}
+
+.brand--lg .brand__mark {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.brand__word {
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--wordmark);
+  line-height: 1;
+}
+
+.brand--sm .brand__word {
+  font-size: 1rem;
+}
+
+.brand--md .brand__word {
+  font-size: 1.15rem;
+}
+
+.brand--lg .brand__word {
+  font-size: 1.5rem;
+}

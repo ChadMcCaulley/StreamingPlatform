@@ -1,0 +1,250 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 0.75rem 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 85%, transparent) 0%, transparent 100%);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.navbar--scrolled {
+  background: var(--nav-scrolled);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid var(--border);
+}
+
+.navbar__inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 3%;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  flex-shrink: 0;
+  color: var(--text);
+}
+
+.navbar__logo-mark {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 6px;
+  background: var(--accent-gradient);
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.navbar__logo-text {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.navbar__links {
+  display: flex;
+  gap: 1.25rem;
+  flex: 1;
+}
+
+.navbar__links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.navbar__links a:hover,
+.navbar__links a.active {
+  color: var(--text);
+}
+
+.navbar__links a.active {
+  font-weight: 650;
+}
+
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+
+.navbar__search {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  transition: all 0.25s ease;
+}
+
+.navbar__search input {
+  width: 0;
+  opacity: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.9rem;
+  outline: none;
+  transition: width 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
+}
+
+.navbar__search--open {
+  background: var(--surface-glass);
+  border-color: var(--border-strong);
+  padding-right: 0.5rem;
+}
+
+.navbar__search--open input {
+  width: 180px;
+  opacity: 1;
+  padding: 0.4rem 0;
+}
+
+.navbar__icon-btn {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.navbar__icon-btn:hover {
+  background: var(--bg-hover);
+}
+
+.navbar__profile {
+  position: relative;
+  margin-left: 0.25rem;
+}
+
+.navbar__avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 4px;
+  border: none;
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 0 0 transparent;
+  transition: box-shadow 0.15s;
+}
+
+.navbar__avatar:hover,
+.navbar__avatar[aria-expanded='true'] {
+  box-shadow: 0 0 0 2px var(--text);
+}
+
+.navbar__menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 200px;
+  padding: 0.4rem;
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  animation: menu-in 0.15s ease;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navbar__menu-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.35rem;
+}
+
+.navbar__menu-dot {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.navbar__menu-head strong {
+  display: block;
+  font-size: 0.9rem;
+}
+
+.navbar__menu-head p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.navbar__menu a,
+.navbar__menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.55rem 0.65rem;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 0.9rem;
+  text-decoration: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.navbar__menu a:hover,
+.navbar__menu button:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.navbar__menu-danger {
+  color: var(--accent) !important;
+}
+
+@media (max-width: 768px) {
+  .navbar__links {
+    display: none;
+  }
+
+  .navbar__search--open input {
+    width: 110px;
+  }
+
+  .navbar__logo-text {
+    font-size: 1.15rem;
+  }
+}
