@@ -71,3 +71,28 @@
 .row__scroller::-webkit-scrollbar {
   display: none;
 }
+
+@media (max-width: 640px) {
+  .row {
+    margin-bottom: 1.35rem;
+  }
+
+  .row__title {
+    font-size: 1rem;
+  }
+
+  .row__scroller {
+    gap: 0.55rem;
+    margin: 0 -0.9rem;
+    padding: 0.25rem 0.9rem 0.65rem;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-inline: 0.9rem;
+  }
+
+  .row__arrow {
+    width: 2.25rem;
+    height: 2.25rem;
+    min-width: 40px;
+    min-height: 40px;
+  }
+}

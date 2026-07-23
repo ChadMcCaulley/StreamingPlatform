@@ -8,20 +8,25 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  min-height: 100dvh;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: none;
 }
 
 #root {
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 img {
@@ -29,10 +34,47 @@ img {
 }
 
 button,
+input,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
 input {
   font: inherit;
 }
 
+/* iOS: avoid zoom on focus for form fields */
+@media (max-width: 900px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
 a {
   color: inherit;
+}
+
+/* Prefer larger touch targets on coarse pointers */
+@media (pointer: coarse) {
+  .sig-btn {
+    min-height: 44px;
+  }
+
+  .sig-btn--icon {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .card__play,
+  .card__info,
+  .card__add {
+    min-height: 36px;
+  }
+
+  .card__add {
+    min-width: 36px;
+  }
 }

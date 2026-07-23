@@ -165,18 +165,42 @@
 @media (max-width: 800px) {
   .auth {
     grid-template-columns: 1fr;
+    min-height: 100dvh;
   }
 
   .auth__panel {
-    padding: 1.5rem;
+    padding: 1.15rem 1.25rem calc(1.15rem + env(safe-area-inset-top, 0px));
+    padding-top: calc(1.15rem + env(safe-area-inset-top, 0px));
     min-height: auto;
   }
 
   .auth__panel-copy h1 {
-    font-size: 1.4rem;
+    font-size: 1.35rem;
   }
 
   .auth__panel-copy p {
     display: none;
+  }
+
+  .auth__panel-foot {
+    display: none;
+  }
+
+  .auth__main {
+    place-items: start center;
+    padding: 1.5rem 1.15rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .auth__card {
+    width: 100%;
+  }
+
+  .auth__field input {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .auth__submit {
+    min-height: 48px;
   }
 }

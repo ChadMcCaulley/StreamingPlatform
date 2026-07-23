@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: var(--rail-width) 1fr;
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg);
 }
 
@@ -10,11 +11,14 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .shell__content {
   flex: 1;
   min-width: 0;
+  /* room for bottom nav on small screens */
+  padding-bottom: 0;
 }
 
 .shell__scrim {
@@ -26,6 +30,10 @@
     grid-template-columns: 1fr;
   }
 
+  .shell__content {
+    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 0.5rem);
+  }
+
   .shell__scrim {
     display: block;
     position: fixed;
@@ -34,5 +42,6 @@
     border: none;
     background: rgba(0, 0, 0, 0.55);
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
 }

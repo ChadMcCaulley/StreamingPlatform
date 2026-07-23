@@ -148,21 +148,9 @@
   color: var(--text-muted);
 }
 
-/* Mobile drawer */
+/* Mobile: bottom nav replaces rail */
 @media (max-width: 900px) {
   .rail {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    z-index: 120;
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
-    box-shadow: var(--shadow);
-    max-height: none;
-  }
-
-  .rail--open {
-    transform: translateX(0);
+    display: none;
   }
 }

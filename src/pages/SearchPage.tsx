@@ -16,18 +16,20 @@ export function SearchPage() {
       <header className="page__header">
         <p className="page__kicker mono">SEARCH</p>
         <h1>Search</h1>
-        <p className="mono">
+        <p>
           {q
             ? results.length
-              ? `${results.length} hits · “${q}”`
-              : `0 hits · “${q}”`
-            : '// use the top bar or press /'}
+              ? `${results.length} result${results.length === 1 ? '' : 's'} for “${q}”`
+              : `No results for “${q}”`
+            : 'Search from the bar above, or press / on desktop.'}
         </p>
       </header>
       <ContentGrid
         items={results}
         onSelect={setSelected}
-        emptyMessage={q ? '// try another title, genre, or cast member' : '// start typing to search'}
+        emptyMessage={
+          q ? 'Try another title, genre, or cast member.' : 'Start typing to search the catalog.'
+        }
       />
       <DetailModal content={selected} onClose={() => setSelected(null)} />
     </div>

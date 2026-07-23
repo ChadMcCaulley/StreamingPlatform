@@ -1,12 +1,24 @@
+import { useCallback } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getContentById } from '../data/catalog'
 import { VideoPlayer } from '../components/VideoPlayer'
+import { useAuth } from '../context/AuthContext'
+import { recordContinueWatching } from '../hooks/useContinueWatching'
 import './WatchPage.css'
 
 export function WatchPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { profile } = useAuth()
   const content = id ? getContentById(id) : undefined
+
+  const onProgress = useCallback(
+    (current: number, duration: number) => {
+      if (!id) return
+      recordContinueWatching(profile?.id ?? null, id, current, duration)
+    },
+    [id, profile?.id],
+  )
 
   if (!content) {
     return (
@@ -26,6 +38,7 @@ export function WatchPage() {
           title={content.title}
           autoPlay
           onBack={() => navigate(-1)}
+          onProgress={onProgress}
         />
       </div>
       <div className="watch__details">

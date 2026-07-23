@@ -33,8 +33,12 @@
   font-size: 0.95rem;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 900px) {
   .page {
-    padding: 1rem 1rem 2.5rem;
+    padding: 1rem 1rem 1.5rem;
+  }
+
+  .page__header h1 {
+    font-size: 1.45rem;
   }
 }

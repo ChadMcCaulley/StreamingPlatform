@@ -127,3 +127,18 @@
   font-size: 0.72rem;
   font-family: inherit;
 }
+
+@media (max-width: 640px) {
+  .watch__stage .vplayer {
+    max-height: none;
+    aspect-ratio: 16 / 9;
+  }
+
+  .watch__details-inner {
+    padding: 1.15rem 1rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .watch__shortcuts {
+    display: none;
+  }
+}

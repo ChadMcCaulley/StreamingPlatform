@@ -177,8 +177,17 @@
     grid-template-columns: 1fr;
   }
 
+  .settings__theme {
+    min-height: 44px;
+  }
+
   .settings__dl div {
     grid-template-columns: 1fr;
     gap: 0.15rem;
+  }
+
+  .settings__btn {
+    flex: 1;
+    min-height: 44px;
   }
 }

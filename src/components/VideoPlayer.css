@@ -279,16 +279,91 @@
 }
 
 @media (max-width: 640px) {
+  .vplayer {
+    /* prefer taller stage on phones in portrait */
+    max-height: none;
+  }
+
   .vplayer__vol-slider {
     display: none;
   }
 
+  .vplayer__volume:hover .vplayer__vol-slider {
+    display: none;
+  }
+
   .vplayer__title {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+  }
+
+  .vplayer__label {
+    font-size: 0.62rem;
   }
 
   .vplayer__center-play {
-    width: 56px;
-    height: 56px;
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    min-height: 64px;
+  }
+
+  .vplayer__top {
+    padding: 0.75rem 0.75rem;
+    padding-top: calc(0.75rem + env(safe-area-inset-top, 0px));
+  }
+
+  .vplayer__bottom {
+    padding: 0.5rem 0.75rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .vplayer__icon-btn {
+    width: 2.75rem;
+    height: 2.75rem;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .vplayer__progress {
+    height: 8px;
+    margin-bottom: 0.55rem;
+  }
+
+  .vplayer__progress:hover {
+    height: 10px;
+  }
+
+  .vplayer__knob {
+    transform: translate(-50%, -50%) scale(1);
+    width: 16px;
+    height: 16px;
+  }
+
+  .vplayer__time {
+    font-size: 0.72rem;
+  }
+
+  .vplayer__controls {
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+  }
+
+  .vplayer__controls-left {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* Landscape phones: more horizontal player chrome */
+@media (max-width: 900px) and (orientation: landscape) {
+  .vplayer {
+    max-height: 100dvh;
+  }
+
+  .watch__stage .vplayer {
+    max-height: 100dvh;
+  }
+
+  .watch__details {
+    display: none;
   }
 }

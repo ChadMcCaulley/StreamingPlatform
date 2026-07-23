@@ -1,0 +1,23 @@
+.match-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.match-ring__track {
+  stroke: var(--border-strong);
+}
+
+.match-ring__value {
+  stroke: #c8f542;
+  transition: stroke-dashoffset 0.4s ease;
+}
+
+.match-ring__label {
+  position: absolute;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}

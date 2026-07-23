@@ -7,6 +7,8 @@ interface VideoPlayerProps {
   title: string
   autoPlay?: boolean
   onBack?: () => void
+  /** Fired periodically with playback progress for continue-watching */
+  onProgress?: (current: number, duration: number) => void
 }
 
 function formatTime(seconds: number) {
@@ -18,10 +20,18 @@ function formatTime(seconds: number) {
   return `${m}:${String(s).padStart(2, '0')}`
 }
 
-export function VideoPlayer({ src, poster, title, autoPlay = true, onBack }: VideoPlayerProps) {
+export function VideoPlayer({
+  src,
+  poster,
+  title,
+  autoPlay = true,
+  onBack,
+  onProgress,
+}: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const shellRef = useRef<HTMLDivElement>(null)
   const hideTimer = useRef<number | null>(null)
+  const lastProgressEmit = useRef(0)
 
   const [playing, setPlaying] = useState(false)
   const [current, setCurrent] = useState(0)
@@ -113,14 +123,23 @@ export function VideoPlayer({ src, poster, title, autoPlay = true, onBack }: Vid
       setPlaying(false)
       setControlsVisible(true)
     }
-    const onTime = () => setCurrent(v.currentTime)
+    const onTime = () => {
+      setCurrent(v.currentTime)
+      if (onProgress && v.duration) {
+        const now = Date.now()
+        if (now - lastProgressEmit.current > 2500) {
+          lastProgressEmit.current = now
+          onProgress(v.currentTime, v.duration)
+        }
+      }
+    }
     const onMeta = () => {
       setDuration(v.duration)
       setLoading(false)
     }
     const onWaiting = () => setLoading(true)
     const onPlaying = () => setLoading(false)
-    const onProgress = () => {
+    const onBuffer = () => {
       if (v.buffered.length > 0) {
         setBuffered(v.buffered.end(v.buffered.length - 1))
       }
@@ -133,14 +152,18 @@ export function VideoPlayer({ src, poster, title, autoPlay = true, onBack }: Vid
       setVolume(v.volume)
       setMuted(v.muted)
     }
+    const onPauseProgress = () => {
+      if (onProgress && v.duration) onProgress(v.currentTime, v.duration)
+    }
 
     v.addEventListener('play', onPlay)
     v.addEventListener('pause', onPause)
+    v.addEventListener('pause', onPauseProgress)
     v.addEventListener('timeupdate', onTime)
     v.addEventListener('loadedmetadata', onMeta)
     v.addEventListener('waiting', onWaiting)
     v.addEventListener('playing', onPlaying)
-    v.addEventListener('progress', onProgress)
+    v.addEventListener('progress', onBuffer)
     v.addEventListener('error', onError)
     v.addEventListener('volumechange', onVol)
 
@@ -149,17 +172,19 @@ export function VideoPlayer({ src, poster, title, autoPlay = true, onBack }: Vid
     }
 
     return () => {
+      if (onProgress && v.duration) onProgress(v.currentTime, v.duration)
       v.removeEventListener('play', onPlay)
       v.removeEventListener('pause', onPause)
+      v.removeEventListener('pause', onPauseProgress)
       v.removeEventListener('timeupdate', onTime)
       v.removeEventListener('loadedmetadata', onMeta)
       v.removeEventListener('waiting', onWaiting)
       v.removeEventListener('playing', onPlaying)
-      v.removeEventListener('progress', onProgress)
+      v.removeEventListener('progress', onBuffer)
       v.removeEventListener('error', onError)
       v.removeEventListener('volumechange', onVol)
     }
-  }, [src, autoPlay])
+  }, [src, autoPlay, onProgress])
 
   useEffect(() => {
     const onFs = () => setIsFullscreen(Boolean(document.fullscreenElement))

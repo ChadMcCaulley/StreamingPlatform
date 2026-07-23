@@ -2,15 +2,17 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
+import { BrandLogo } from './BrandLogo'
 import './TopBar.css'
 
 interface TopBarProps {
   onMenuToggle: () => void
+  menuOpen?: boolean
 }
 
-export function TopBar({ onMenuToggle }: TopBarProps) {
+export function TopBar({ onMenuToggle, menuOpen = false }: TopBarProps) {
   const [query, setQuery] = useState('')
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [accountOpen, setAccountOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   const location = useLocation()
@@ -27,13 +29,13 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
   }, [location.pathname, location.search])
 
   useEffect(() => {
-    setMenuOpen(false)
+    setAccountOpen(false)
   }, [location.pathname])
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false)
+        setAccountOpen(false)
       }
     }
     document.addEventListener('mousedown', onClick)
@@ -48,15 +50,26 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
 
   return (
     <header className="topbar">
+      <div className="topbar__brand-mobile">
+        <BrandLogo to="/" size="sm" showWordmark={false} />
+      </div>
+
       <button
         type="button"
         className="topbar__menu-btn"
         onClick={onMenuToggle}
-        aria-label="Open navigation"
+        aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+        aria-expanded={menuOpen}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M4 7h16M4 12h16M4 17h16" />
-        </svg>
+        {menuOpen ? (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        ) : (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        )}
       </button>
 
       <form className="topbar__search" onSubmit={onSubmit} role="search">
@@ -66,7 +79,9 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
         </svg>
         <input
           type="search"
-          placeholder="Search titles, genres, cast…"
+          placeholder="Search…"
+          enterKeyHint="search"
+          autoComplete="off"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           aria-label="Search catalog"
@@ -75,8 +90,8 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
       </form>
 
       <div className="topbar__actions">
-        <span className="topbar__session mono" title={session?.email}>
-          {profile ? `// ${profile.name}` : ''}
+        <span className="topbar__session" title={session?.email}>
+          {profile?.name ?? ''}
         </span>
 
         <button
@@ -103,14 +118,14 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
             type="button"
             className="topbar__avatar"
             style={{ background: profile?.avatarColor ?? 'var(--brand-ink)' }}
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-expanded={menuOpen}
+            onClick={() => setAccountOpen((v) => !v)}
+            aria-expanded={accountOpen}
             aria-haspopup="menu"
             aria-label="Account menu"
           >
             {profile?.name?.charAt(0).toUpperCase() ?? '?'}
           </button>
-          {menuOpen && (
+          {accountOpen && (
             <div className="topbar__dropdown" role="menu">
               <div className="topbar__dropdown-head mono">ACCOUNT</div>
               <button
@@ -123,7 +138,7 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
               >
                 Switch profile
               </button>
-              <Link to="/settings" role="menuitem" onClick={() => setMenuOpen(false)}>
+              <Link to="/settings" role="menuitem" onClick={() => setAccountOpen(false)}>
                 Settings
               </Link>
               <button type="button" role="menuitem" className="is-danger" onClick={logout}>

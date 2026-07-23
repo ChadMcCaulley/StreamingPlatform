@@ -135,3 +135,30 @@
 .grid .card {
   width: 100%;
 }
+
+@media (max-width: 640px) {
+  .card {
+    width: 142px;
+  }
+
+  .card__body {
+    padding: 0.5rem 0.5rem 0.55rem;
+  }
+
+  .card__title {
+    font-size: 0.8rem;
+    min-height: 2em;
+  }
+
+  .card__play,
+  .card__info {
+    padding: 0.4rem 0.25rem;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .card {
+    width: 132px;
+  }
+}

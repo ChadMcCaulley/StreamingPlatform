@@ -2,26 +2,36 @@
   height: var(--topbar-height);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   padding: 0 1.25rem;
+  padding-top: env(safe-area-inset-top, 0px);
   border-bottom: 1px solid var(--border);
   background: var(--surface-glass);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
   z-index: 50;
 }
 
+.topbar__brand-mobile {
+  display: none;
+  flex-shrink: 0;
+}
+
 .topbar__menu-btn {
   display: none;
   place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 44px;
+  min-height: 44px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--bg-elevated);
   color: var(--text);
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .topbar__search {
@@ -31,6 +41,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.45rem 0.75rem;
+  min-height: 42px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--bg);
@@ -49,7 +60,7 @@
   background: transparent;
   color: var(--text);
   outline: none;
-  font-size: 0.9rem;
+  font-size: 16px; /* prevent iOS zoom */
   min-width: 0;
 }
 
@@ -70,13 +81,18 @@
   .topbar__kbd {
     display: inline-block;
   }
+
+  .topbar__search input {
+    font-size: 0.9rem;
+  }
 }
 
 .topbar__actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   margin-left: auto;
+  flex-shrink: 0;
 }
 
 .topbar__session {
@@ -94,13 +110,16 @@
 .topbar__icon {
   display: grid;
   place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 44px;
+  min-height: 44px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--bg-elevated);
   color: var(--text);
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .topbar__icon:hover {
@@ -113,8 +132,10 @@
 }
 
 .topbar__avatar {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: var(--radius);
   border: 1px solid var(--border-strong);
   color: #fff;
@@ -123,6 +144,7 @@
   cursor: pointer;
   display: grid;
   place-items: center;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .topbar__avatar:hover,
@@ -134,7 +156,7 @@
   position: absolute;
   top: calc(100% + 0.4rem);
   right: 0;
-  min-width: 180px;
+  min-width: 200px;
   padding: 0.35rem;
   border-radius: var(--radius);
   background: var(--bg-elevated);
@@ -157,15 +179,17 @@
   display: block;
   width: 100%;
   text-align: left;
-  padding: 0.5rem 0.6rem;
+  padding: 0.7rem 0.65rem;
+  min-height: 44px;
   border: none;
   background: transparent;
   color: var(--text-secondary);
   font: inherit;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   text-decoration: none;
   border-radius: 4px;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .topbar__dropdown a:hover,
@@ -179,7 +203,28 @@
 }
 
 @media (max-width: 900px) {
+  .topbar {
+    padding: 0 0.75rem;
+    padding-top: env(safe-area-inset-top, 0px);
+    height: calc(var(--topbar-height) + env(safe-area-inset-top, 0px));
+    gap: 0.45rem;
+  }
+
+  /* Bottom nav is primary — brand mark instead of hamburger */
   .topbar__menu-btn {
-    display: grid;
+    display: none;
+  }
+
+  .topbar__brand-mobile {
+    display: block;
+  }
+
+  .topbar__search {
+    max-width: none;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .topbar__search input::placeholder {
+    content: 'Search';
   }
 }
