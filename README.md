@@ -1,60 +1,90 @@
 # Signal
 
-**Cinema, engineered.** A streaming platform UI built as a developer portfolio piece — React, TypeScript, Vite — deployable free on Netlify.
+**Cinema, engineered.** React + TypeScript frontend with a **Django REST** API.
 
-Not a Netflix skin: side-rail shell, bento home, mono metadata, fixed brand mark, dark/light only.
+## Architecture
 
-## Demo
+| Layer | Stack | Dev |
+|--------|--------|-----|
+| UI | React, Vite, TypeScript | `npm run dev` → http://localhost:5173 |
+| API | Django 4.2, DRF, Token auth, SQLite | `npm run api` → http://127.0.0.1:8000 |
+| Deploy | Frontend → Netlify; API → Railway / Render / Fly / etc. | Django is not Netlify-native |
+
+Vite proxies `/api/*` to Django in development.
+
+## Quick start
+
+### 1. Backend
+
+```bash
+cd backend
+python -m venv .venv
+# Windows:
+.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\python manage.py migrate
+.venv\Scripts\python manage.py seed_signal
+.venv\Scripts\python manage.py runserver
+```
+
+Or from repo root after venv exists:
+
+```bash
+npm run api:migrate
+npm run api:seed
+npm run api
+```
+
+### 2. Frontend
 
 ```bash
 npm install
 npm run dev
 ```
 
-**Login:** `demo@signal.app` / `demo1234`
+### Demo login
 
-## Stack
+- **Email:** `demo@signal.app`
+- **Password:** `demo1234`
 
-| Layer | Choice |
-|--------|--------|
-| UI | React + TypeScript + Vite |
-| Auth (demo) | Client-side / `localStorage` |
-| Deploy | Netlify static + optional Functions |
-| Backend | Next (API pass) — deliberately UI-first |
+## API surface
 
-## Features
+| Method | Path | Notes |
+|--------|------|--------|
+| POST | `/api/auth/register/` | `{ name, email, password }` |
+| POST | `/api/auth/login/` | `{ email, password }` → token |
+| POST | `/api/auth/logout/` | Token required |
+| GET | `/api/auth/me/` | Current user + profiles |
+| GET/POST | `/api/profiles/` | List / create profile |
+| DELETE | `/api/profiles/:id/` | Remove profile |
+| GET | `/api/catalog/home/` | Featured, rows, genres |
+| GET | `/api/catalog/` | Filter: `type`, `q`, `genre` |
+| GET | `/api/catalog/:slug/` | Title detail |
+| GET/POST/DELETE | `/api/my-list/` | Header `X-Profile-Id` |
+| POST | `/api/my-list/toggle/` | `{ titleId }` |
+| GET/PUT/DELETE | `/api/continue/` | Progress upsert |
 
-- **Auth + profiles** — sign in/up, multi-profile picker, per-profile My List
-- **Dark / Light** themes only; **brand logo never recolors**
-- **App shell** — left rail + top search bar (press `/`)
-- **Home bento** — featured tile, up-next, list preview, genre chips
-- **Custom video player** — keyboard shortcuts, speed, fullscreen
-- Optional Netlify Function: `/api/catalog`
+Auth header: `Authorization: Token <key>`  
+Profile-scoped routes: `X-Profile-Id: <profile pk>`
 
-## Brand
-
-- Name: **Signal**
-- Mark: lime `#C8F542` plate + dark play glyph (theme-invariant)
-- Type: Inter + JetBrains Mono
-
-## Deploy
-
-```bash
-npm run build
-# publish dist/ — netlify.toml already configured
-```
+Admin: `python manage.py createsuperuser` → `/admin/`
 
 ## Project layout
 
 ```
-src/
-  components/   AppShell, SideNav, TopBar, BrandLogo, bento, player…
-  pages/        Home, Movies, Series, My List, Search, Watch, Auth, Settings
-  context/      Auth, Theme, My List
-  data/         Demo catalog
-  styles/       Theme tokens
-netlify/functions/
+src/                 React app
+  api/               HTTP client (auth, catalog, lists)
+backend/
+  config/            Django settings
+  catalog/           Titles + seed
+  accounts/          Profiles, my list, continue watching
 ```
+
+## Production notes
+
+- Set `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=0`, `DJANGO_ALLOWED_HOSTS`, `CORS_ALLOWED_ORIGINS`
+- Use Postgres in production (swap `DATABASES`)
+- Frontend: set `VITE_API_URL=https://your-api.example.com/api`
+- Never use demo passwords in production
 
 ## License
 

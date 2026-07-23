@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "api": "backend\\.venv\\Scripts\\python.exe backend\\manage.py runserver",
+    "api:seed": "backend\\.venv\\Scripts\\python.exe backend\\manage.py seed_signal",
+    "api:migrate": "backend\\.venv\\Scripts\\python.exe backend\\manage.py migrate"
   },
   "dependencies": {
     "react": "^19.2.7",
