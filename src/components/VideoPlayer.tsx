@@ -118,6 +118,15 @@ export function VideoPlayer({
     const v = videoRef.current
     if (!v) return
 
+    // Reset player state when stream source changes
+    setError(null)
+    setLoading(true)
+    setPlaying(false)
+    setCurrent(0)
+    setDuration(0)
+    setBuffered(0)
+    lastProgressEmit.current = 0
+
     const onPlay = () => setPlaying(true)
     const onPause = () => {
       setPlaying(false)

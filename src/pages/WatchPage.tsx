@@ -49,11 +49,14 @@ export function WatchPage() {
     )
   }
 
+  // Prefer title stream; fall back to bundled test footage if missing
+  const streamSrc = content.videoUrl || content.trailerUrl || '/videos/big-buck-bunny.mp4'
+
   return (
     <div className="watch">
       <div className="watch__stage">
         <VideoPlayer
-          src={content.videoUrl}
+          src={streamSrc}
           poster={content.backdropUrl}
           title={content.title}
           autoPlay

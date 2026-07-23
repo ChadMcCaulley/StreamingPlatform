@@ -86,6 +86,16 @@ backend/
 - Frontend: set `VITE_API_URL=https://your-api.example.com/api`
 - Never use demo passwords in production
 
+## Test footage
+
+Playback uses short sample clips in `public/videos/` (bundled with the frontend).
+The old Google “gtv-videos-bucket” sample URLs now return 403, so titles point at
+local paths like `/videos/big-buck-bunny.mp4`. After changing seed data, re-run:
+
+```bash
+npm run api:seed
+```
+
 ## License
 
 Demo project — sample media rights belong to their respective owners.
