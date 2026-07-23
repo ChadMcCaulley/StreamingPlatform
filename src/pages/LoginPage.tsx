@@ -23,15 +23,14 @@ export function LoginPage() {
     e.preventDefault()
     setError('')
     setLoading(true)
-    window.setTimeout(() => {
-      const result = login(email, password)
+    void login(email, password).then((result) => {
       setLoading(false)
       if (!result.ok) {
         setError(result.error)
         return
       }
       navigate('/profiles', { replace: true })
-    }, 300)
+    })
   }
 
   return (

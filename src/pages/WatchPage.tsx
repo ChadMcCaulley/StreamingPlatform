@@ -1,16 +1,28 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { getContentById } from '../data/catalog'
+import { fetchTitle } from '../api/catalog'
 import { VideoPlayer } from '../components/VideoPlayer'
 import { useAuth } from '../context/AuthContext'
 import { recordContinueWatching } from '../hooks/useContinueWatching'
+import type { Content } from '../types'
 import './WatchPage.css'
 
 export function WatchPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { profile } = useAuth()
-  const content = id ? getContentById(id) : undefined
+  const [content, setContent] = useState<Content | null>(null)
+  const [missing, setMissing] = useState(false)
+
+  useEffect(() => {
+    if (!id) {
+      setMissing(true)
+      return
+    }
+    fetchTitle(id)
+      .then(setContent)
+      .catch(() => setMissing(true))
+  }, [id])
 
   const onProgress = useCallback(
     (current: number, duration: number) => {
@@ -20,11 +32,19 @@ export function WatchPage() {
     [id, profile?.id],
   )
 
-  if (!content) {
+  if (missing) {
     return (
       <div className="watch watch--missing">
         <h1>Title not found</h1>
         <Link to="/">Back to Home</Link>
+      </div>
+    )
+  }
+
+  if (!content) {
+    return (
+      <div className="watch watch--missing">
+        <h1>Loading…</h1>
       </div>
     )
   }

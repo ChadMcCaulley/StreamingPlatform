@@ -8,8 +8,16 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, requireProfile = true }: ProtectedRouteProps) {
-  const { isAuthenticated, hasProfile } = useAuth()
+  const { isAuthenticated, hasProfile, loading } = useAuth()
   const location = useLocation()
+
+  if (loading) {
+    return (
+      <div className="home home--status" style={{ minHeight: '40vh', display: 'grid', placeItems: 'center' }}>
+        <p className="mono">Loading session…</p>
+      </div>
+    )
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />

@@ -22,15 +22,14 @@ export function RegisterPage() {
     e.preventDefault()
     setError('')
     setLoading(true)
-    window.setTimeout(() => {
-      const result = register(name, email, password)
+    void register(name, email, password).then((result) => {
       setLoading(false)
       if (!result.ok) {
         setError(result.error)
         return
       }
       navigate('/profiles', { replace: true })
-    }, 300)
+    })
   }
 
   return (
@@ -41,7 +40,7 @@ export function RegisterPage() {
           <div className="auth__panel-copy">
             <h1>Join Signal.</h1>
             <p>
-              Free local demo — accounts live in your browser until we wire a real API.
+              Free local demo — accounts are stored in the Django API (SQLite by default).
             </p>
           </div>
         </div>

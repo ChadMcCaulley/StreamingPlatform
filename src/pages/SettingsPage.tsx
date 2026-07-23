@@ -68,7 +68,11 @@ export function SettingsPage() {
             <button type="button" className="settings__btn" onClick={clearProfile}>
               Switch profile
             </button>
-            <button type="button" className="settings__btn settings__btn--danger" onClick={logout}>
+            <button
+              type="button"
+              className="settings__btn settings__btn--danger"
+              onClick={() => void logout()}
+            >
               Sign out
             </button>
           </div>
@@ -77,8 +81,9 @@ export function SettingsPage() {
         <section className="settings__card settings__card--muted">
           <h2>About this build</h2>
           <p>
-            Signal is a portfolio streaming UI. Auth is browser-local for prototyping. When the API
-            lands, accounts move server-side — never use real passwords here.
+            Signal is a portfolio streaming app. The React UI talks to a Django REST API for auth,
+            profiles, catalog, My List, and continue watching. Demo login: demo@signal.app /
+            demo1234.
           </p>
         </section>
       </div>

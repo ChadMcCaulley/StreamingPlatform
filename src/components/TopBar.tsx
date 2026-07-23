@@ -141,7 +141,7 @@ export function TopBar({ onMenuToggle, menuOpen = false }: TopBarProps) {
               <Link to="/settings" role="menuitem" onClick={() => setAccountOpen(false)}>
                 Settings
               </Link>
-              <button type="button" role="menuitem" className="is-danger" onClick={logout}>
+              <button type="button" role="menuitem" className="is-danger" onClick={() => void logout()}>
                 Sign out
               </button>
             </div>

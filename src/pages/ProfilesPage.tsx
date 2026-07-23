@@ -25,22 +25,23 @@ export function ProfilesPage() {
 
   const onAdd = (e: FormEvent) => {
     e.preventDefault()
-    const result = addProfile(name, kids)
-    if (!result.ok) {
-      setError(result.error)
-      return
-    }
-    setName('')
-    setKids(false)
-    setAdding(false)
-    setError('')
+    void addProfile(name, kids).then((result) => {
+      if (!result.ok) {
+        setError(result.error)
+        return
+      }
+      setName('')
+      setKids(false)
+      setAdding(false)
+      setError('')
+    })
   }
 
   return (
     <div className="profiles">
       <header className="profiles__header">
         <BrandLogo to="/profiles" />
-        <button type="button" className="profiles__logout mono" onClick={logout}>
+        <button type="button" className="profiles__logout mono" onClick={() => void logout()}>
           Sign out
         </button>
       </header>
@@ -69,7 +70,7 @@ export function ProfilesPage() {
                 <button
                   type="button"
                   className="profiles__remove mono"
-                  onClick={() => removeProfile(p.id)}
+                  onClick={() => void removeProfile(p.id)}
                 >
                   Remove
                 </button>

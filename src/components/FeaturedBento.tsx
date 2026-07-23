@@ -103,33 +103,11 @@ export function FeaturedBento({
         <div className="bento__hero-media">
           <Thumbnail content={featured} variant="backdrop" priority className="bento__thumb" />
           <div className="bento__hero-shade" />
-          <div
-            className="bento__hero-accent"
-            style={{
-              background: `linear-gradient(135deg, ${featured.accentFrom}, ${featured.accentTo})`,
-            }}
-            aria-hidden="true"
-          />
         </div>
 
         <div className="bento__hero-body">
           <div className="bento__hero-top">
             <p className="bento__kicker mono">FEATURED · {featured.type.toUpperCase()}</p>
-            {pool.length > 1 && (
-              <div className="bento__dots" role="tablist" aria-label="Featured titles">
-                {pool.map((item, i) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={i === index % pool.length}
-                    className={`bento__dot ${i === index % pool.length ? 'is-active' : ''}`}
-                    onClick={() => setIndex(i)}
-                    aria-label={`Show ${item.title}`}
-                  />
-                ))}
-              </div>
-            )}
           </div>
 
           <div className="bento__hero-main">
@@ -188,6 +166,22 @@ export function FeaturedBento({
             )}
           </div>
         </div>
+
+        {pool.length > 1 && (
+          <div className="bento__dots" role="tablist" aria-label="Featured titles">
+            {pool.map((item, i) => (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={i === index % pool.length}
+                className={`bento__dot ${i === index % pool.length ? 'is-active' : ''}`}
+                onClick={() => setIndex(i)}
+                aria-label={`Show ${item.title}`}
+              />
+            ))}
+          </div>
+        )}
       </article>
 
       {spotlights[0] && (

@@ -1,83 +1,82 @@
 import { useCallback, useEffect, useState } from 'react'
-import { getContentById } from '../data/catalog'
+import { fetchMyList, toggleMyList } from '../api/lists'
+import { getCachedTitle } from '../api/catalog'
 import type { Content } from '../types'
 
-const STORAGE_PREFIX = 'streamflix-my-list'
-
-function storageKey(profileId: string | null) {
-  return `${STORAGE_PREFIX}:${profileId ?? 'anon'}`
-}
-
-function readIds(profileId: string | null): string[] {
-  try {
-    const raw = localStorage.getItem(storageKey(profileId))
-    if (!raw) return []
-    const parsed = JSON.parse(raw) as string[]
-    return Array.isArray(parsed) ? parsed : []
-  } catch {
-    return []
-  }
-}
-
-function writeIds(profileId: string | null, ids: string[]) {
-  localStorage.setItem(storageKey(profileId), JSON.stringify(ids))
-}
-
 export function useMyList(profileId: string | null) {
-  const [ids, setIds] = useState<string[]>(() => readIds(profileId))
+  const [ids, setIds] = useState<string[]>([])
+  const [items, setItems] = useState<Content[]>([])
+  const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    setIds(readIds(profileId))
-  }, [profileId])
-
-  useEffect(() => {
-    const key = storageKey(profileId)
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === key) setIds(readIds(profileId))
+  const reload = useCallback(async () => {
+    if (!profileId) {
+      setIds([])
+      setItems([])
+      return
     }
-    window.addEventListener('storage', onStorage)
-    return () => window.removeEventListener('storage', onStorage)
+    setLoading(true)
+    try {
+      const data = await fetchMyList(profileId)
+      setIds(data.ids)
+      setItems(data.items)
+    } catch {
+      setIds([])
+      setItems([])
+    } finally {
+      setLoading(false)
+    }
   }, [profileId])
 
-  const items: Content[] = ids
-    .map((id) => getContentById(id))
-    .filter((c): c is Content => Boolean(c))
+  useEffect(() => {
+    void reload()
+  }, [reload])
 
   const isInList = useCallback((id: string) => ids.includes(id), [ids])
 
   const toggle = useCallback(
     (id: string) => {
+      if (!profileId) return
+      // optimistic
       setIds((prev) => {
         const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-        writeIds(profileId, next)
         return next
       })
+      setItems((prev) => {
+        if (prev.some((c) => c.id === id)) return prev.filter((c) => c.id !== id)
+        const cached = getCachedTitle(id)
+        return cached ? [...prev, cached] : prev
+      })
+      void toggleMyList(profileId, id)
+        .then((res) => {
+          setIds(res.ids)
+          return fetchMyList(profileId)
+        })
+        .then((data) => {
+          setIds(data.ids)
+          setItems(data.items)
+        })
+        .catch(() => {
+          void reload()
+        })
     },
-    [profileId],
+    [profileId, reload],
   )
 
   const add = useCallback(
     (id: string) => {
-      setIds((prev) => {
-        if (prev.includes(id)) return prev
-        const next = [...prev, id]
-        writeIds(profileId, next)
-        return next
-      })
+      if (!profileId || ids.includes(id)) return
+      toggle(id)
     },
-    [profileId],
+    [profileId, ids, toggle],
   )
 
   const remove = useCallback(
     (id: string) => {
-      setIds((prev) => {
-        const next = prev.filter((x) => x !== id)
-        writeIds(profileId, next)
-        return next
-      })
+      if (!profileId || !ids.includes(id)) return
+      toggle(id)
     },
-    [profileId],
+    [profileId, ids, toggle],
   )
 
-  return { ids, items, isInList, toggle, add, remove }
+  return { ids, items, isInList, toggle, add, remove, loading, reload }
 }

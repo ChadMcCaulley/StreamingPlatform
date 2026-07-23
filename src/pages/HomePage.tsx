@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { FeaturedBento } from '../components/FeaturedBento'
 import { ContentRow } from '../components/ContentRow'
 import { DetailModal } from '../components/DetailModal'
-import { buildRows, catalog, getFeatured } from '../data/catalog'
+import { fetchCatalogHome, type CatalogHomeResponse } from '../api/catalog'
 import { useAuth } from '../context/AuthContext'
 import { useMyListContext } from '../context/MyListContext'
 import { useContinueWatching } from '../hooks/useContinueWatching'
@@ -10,59 +10,67 @@ import type { Content } from '../types'
 import './HomePage.css'
 
 export function HomePage() {
-  const rows = buildRows()
   const { profile } = useAuth()
   const { items: listItems } = useMyListContext()
   const { items: continueItems } = useContinueWatching(profile?.id ?? null)
   const [selected, setSelected] = useState<Content | null>(null)
   const [genre, setGenre] = useState<string | null>(null)
+  const [home, setHome] = useState<CatalogHomeResponse | null>(null)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(true)
 
-  const featuredPool = useMemo(() => {
-    const flagged = catalog.filter((c) => c.featured)
-    if (flagged.length >= 2) return flagged
-    // pad with high-match titles for rotation
-    const rest = [...catalog]
-      .filter((c) => !flagged.some((f) => f.id === c.id))
-      .sort((a, b) => b.matchScore - a.matchScore)
-    return [...flagged, ...rest].slice(0, 4)
-  }, [])
-
-  const featuredIds = useMemo(() => new Set(featuredPool.map((c) => c.id)), [featuredPool])
-
-  const spotlights = useMemo(
-    () =>
-      catalog
-        .filter((c) => !featuredIds.has(c.id) && (c.newRelease || c.trending))
-        .slice(0, 2),
-    [featuredIds],
-  )
-
-  const signalPick = useMemo(() => {
-    return (
-      [...catalog]
-        .filter((c) => !featuredIds.has(c.id))
-        .sort((a, b) => b.matchScore - a.matchScore)[0] ?? getFeatured()
-    )
-  }, [featuredIds])
-
-  const genres = useMemo(() => {
-    const set = new Set<string>()
-    catalog.forEach((c) => c.genres.forEach((g) => set.add(g)))
-    return Array.from(set).sort()
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    fetchCatalogHome()
+      .then((data) => {
+        if (!cancelled) {
+          setHome(data)
+          setError('')
+        }
+      })
+      .catch((e) => {
+        if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load catalog')
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   const filteredRows = useMemo(() => {
-    if (!genre) return rows
-    return rows
+    if (!home) return []
+    if (!genre) return home.rows
+    return home.rows
       .map((row) => ({
         ...row,
         items: row.items.filter((i) => i.genres.includes(genre)),
       }))
       .filter((row) => row.items.length > 0)
-  }, [rows, genre])
+  }, [home, genre])
 
   const hour = new Date().getHours()
   const dayPart = hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening'
+
+  if (loading) {
+    return (
+      <div className="home home--status">
+        <p className="mono">Loading catalog…</p>
+      </div>
+    )
+  }
+
+  if (error || !home) {
+    return (
+      <div className="home home--status">
+        <p>Could not load catalog from the API.</p>
+        <p className="home__sub">{error || 'Unknown error'}</p>
+        <p className="home__sub">Is Django running on port 8000?</p>
+      </div>
+    )
+  }
 
   return (
     <div className="home">
@@ -73,12 +81,12 @@ export function HomePage() {
             {profile ? `Good ${dayPart}, ${profile.name}` : 'Welcome'}
           </h1>
           <p className="home__sub">
-            {catalog.length} titles in catalog · {listItems.length} on your list
+            {home.count} titles in catalog · {listItems.length} on your list
           </p>
         </div>
         <div className="home__stats mono">
           <div>
-            <span className="home__stat-val">{catalog.length}</span>
+            <span className="home__stat-val">{home.count}</span>
             <span className="home__stat-lab">titles</span>
           </div>
           <div>
@@ -93,13 +101,9 @@ export function HomePage() {
       </header>
 
       <FeaturedBento
-        featuredPool={featuredPool}
-        spotlights={
-          spotlights.length >= 2
-            ? spotlights
-            : catalog.filter((c) => !featuredIds.has(c.id)).slice(0, 2)
-        }
-        signalPick={signalPick}
+        featuredPool={home.featuredPool}
+        spotlights={home.spotlights}
+        signalPick={home.signalPick}
         listPreview={listItems}
         continueWatching={continueItems}
         onSelect={setSelected}
@@ -118,7 +122,7 @@ export function HomePage() {
           >
             All
           </button>
-          {genres.map((g) => (
+          {home.genres.map((g) => (
             <button
               key={g}
               type="button"
